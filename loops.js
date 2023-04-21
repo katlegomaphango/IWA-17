@@ -45,13 +45,13 @@ const createData = () => {
 
     const weeks = createArray(6)
     const days = createArray(7)
-    let value = null
+    let value = ''
     let day = 1
     //for (weekIndex in weeks)
     //const [weekIndex, weekDay] of weeks.entries()
     for (let weekIndex = 0; weekIndex < weeks.length; weekIndex++) {
         value = {
-            week: `Week ${parseInt(weekIndex) + 1}`,
+            week: weekIndex + 1, // week: `Week ${parseInt(weekIndex) + 1}`,
             days: []
         }
         //console.log(`val ${weekIndex}`,value)
@@ -76,10 +76,10 @@ const createData = () => {
             // }
             // console.log(value)
             */
-            if ((dayIndex < startDay && value.week == 'Week 1') || day > daysInMonth){
+            if ((dayIndex < startDay && value.week == 1) || day > daysInMonth){
                 value.days.push({
                     dayOfWeek: dayIndex,
-                    value: null
+                    value: ''
                 })
                 
             } else {
@@ -102,40 +102,42 @@ const createData = () => {
 
 const addCell = (existing, classString, value) => {
     const result = /* html */ `
-        <td ${classString}>
+        ${existing}
+        <td class="${classString}">
             ${value}
         </td>
-
-        ${existing}
     `
+    return result
 }
 
 const createHtml = (data) => {
-    let result = 'kat'
-    console.log(data)
-    for (const entry in data) { //for (week, days in data) {
-        console.log(entry)
+    let result = ''
+
+    for (let i = 0; i < data.length; i++) { //for (week, days in data) {
         // const [week, days] = entry
         // console.log(days)
         let inner = ""
-    //     addCell(inner, 'table__cell table__cell_sidebar', 'Week {week}')
-    
-    //     for (dayOfWeek, value in days) {
-    //         classString = table__cell
-	// 					isToday = new Date === value
-    //         isWeekend = dayOfWeek = 1 && dayOfWeek == 7
-    //         isAlternate = week / 2
+        inner = addCell(inner, 'table__cell table__cell_sidebar', `Week ${data[i].week}`)
+        for (let k = 0; k < data[i].days.length; k++) { //for (dayOfWeek, value in days)
+            // console.log(data[i].days[k])
+            let classString = 'table__cell'
+			let isToday = new Date().getDate() === data[i].days[k].value
+            let isWeekend = data[i].days[k].dayOfWeek == 0 || data[i].days[k].dayOfWeek == 6
+            let isAlternate = data[i].week / 2
 
     //         let classString = 'table__cell'
 
-	// 					if (isToday) classString = `${classString} table__cell_today`
-    //         if (isWeekend) classString === '{classString} table__cell_weekend'
-    //         if (isAlternate) classString === '{classString} table__cell_alternate'
-    //         addCell(inner, classString, value)
-    //     }
-
-        result = `<tr>${inner}</tr>`
+			if (isToday) classString = `${classString} table__cell_today`
+            if (isWeekend) classString = `${classString} table__cell_weekend`
+            if (isAlternate) classString = `${classString} table__cell_alternate`
+            console.log(data[i].days[k])
+            inner = addCell(inner, classString, data[i].days[k].value)
+        }
+        // inner = addCell(inner, 'table__cell table__cell_sidebar', `Week ${data[i].week}`)
+        // console.log(inner)
+        result += `<tr>${inner}</tr>`
     }
+    // console.log(result)
     return result
 }
 
